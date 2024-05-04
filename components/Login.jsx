@@ -1,6 +1,7 @@
 import { View, Text, Image, TouchableOpacity, TextInput } from 'react-native'
 import React, { useState } from 'react';
 import axios from 'axios'; // Import axios for making HTTP requests
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Login = ({ navigation }) => {
     const [phoneNumber, setPhoneNumber] = useState('');
@@ -13,6 +14,7 @@ const Login = ({ navigation }) => {
                 password: password
             });
             console.log(response.data); // Log the response from the server
+            await AsyncStorage.setItem('isLoggedIn', 'true');
             // Navigate to the HomeStack screen upon successful login
             navigation.navigate('HomeStack');
         } catch (error) {

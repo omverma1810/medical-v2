@@ -1,4 +1,4 @@
-import React from 'react';
+import React,{useState,useEffect} from 'react';
 import {  StyleSheet } from 'react-native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { NavigationContainer } from '@react-navigation/native';
@@ -10,6 +10,7 @@ import Login from './Login';
 import ForgetPass from './ForgetPass';
 import OTP from './OTP'
 import NewPass from './NewPass'
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Stack = createStackNavigator();
 
@@ -27,7 +28,6 @@ const styles = StyleSheet.create({
 const LoginStack = () => {
   return (
     <Stack.Navigator>
-      
       <Stack.Screen name="OpenScreen" component={OpenScreen} options={{ headerShown: false }}/>
       <Stack.Screen name="Login" component={Login} options={{ headerShown: false }}/>
       <Stack.Screen name="Register" component={Register} options={{ headerShown: false }}/>
@@ -65,9 +65,30 @@ const HomeStack = () => {
     );
   };
 const App = () => {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  useEffect(() => {
+    checkLoginStatus();
+  }, []);
+
+  const checkLoginStatus = async () => {
+    try {
+      const value = await AsyncStorage.getItem('isLoggedIn');
+      if (value !== null) {
+        // value previously stored
+        setIsLoggedIn(true);
+      } else {
+        setIsLoggedIn(false);
+      }
+    } catch (error) {
+      // Error retrieving data
+      console.error('Error retrieving login status:', error);
+    }
+  };
+
   return (
     <NavigationContainer independent={true}>
-      <Stack.Navigator initialRouteName="OpenScreen">
+      <Stack.Navigator initialRouteName={isLoggedIn?'OpenScreen':'HomeStack'}>
         <Stack.Screen name="OpenScreen" component={LoginStack} options={{ headerShown: false }} />
         <Stack.Screen name="HomeStack" component={HomeStack} options={{ headerShown: false }}  />
         <Stack.Screen name="ForgetStack" component={ForgetStack} options={{ headerShown: false }}/>
