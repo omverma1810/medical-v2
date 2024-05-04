@@ -4,6 +4,8 @@ import Icons1 from '@expo/vector-icons/Feather'
 import { Checkbox } from '@ant-design/react-native';
 import { Picker } from '@react-native-picker/picker';
 import * as ImagePicker from 'expo-image-picker';
+import axios from 'axios';
+
 const HomeScreen = ({ navigation }) => {
     const [image, setImage] = useState(null);
     const [showDeleteIcon, setShowDeleteIcon] = useState(false);
@@ -37,23 +39,20 @@ const HomeScreen = ({ navigation }) => {
                 type: 'image/*',
             });
             formData.append('option', selectedOption);
-            console.log(formData)
-            const response = await fetch(`https://ml-models-2.onrender.com/predict?option=${selectedOption}`, {
-                method: 'POST',
-                body: formData,
+            const response = await axios.post(`https://ml-models-2.onrender.com/predict?option=${selectedOption}`, formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                 },
             });
-            if (!response.ok) {
+            if (!response.status === 200) {
                 throw new Error(`HTTP error! Status: ${response.status}`);
             }
-            const responseData = await response.json();
+            const responseData = response.data;
             console.log(responseData);
             const res = responseData.prediction;
             const metrics = responseData.metrics;
             const option = responseData.option;
-            navigation.navigate('Result', { res,metrics ,option});
+            navigation.navigate('Result', { res, metrics, option });
         } catch (error) {
             console.error('Error predicting:', error);
         }

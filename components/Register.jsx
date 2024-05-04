@@ -3,32 +3,33 @@ import React, { useState } from 'react';
 import axios from 'axios'; // Import axios for making HTTP requests
 
 const Register = ({ navigation }) => {
-    const [phoneNumber, setPhoneNumber] = useState();
+    const [phoneNumber, setPhoneNumber] = useState('');
     const [password, setPassword] = useState('');
     const [username, setUsername] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
 
     const handleRegister = async () => {
         try {
-            const response = await fetch('https://ml-models-2.onrender.com/signup', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    username: username,
-                    phonenumber: phoneNumber,
-                    password: password,
-                    confirm_password: confirmPassword
-                }),
+            const response = await axios.post('https://ml-models-2.onrender.com/signup', {
+                username: username,
+                phonenumber: phoneNumber,
+                password: password,
+                confirm_password: confirmPassword
             });
-            const responseData = await response.json();
-            console.log(responseData);
-            navigation.navigate('HomeStack');
+            console.log(response.data);
+            if (response.status === 200) {
+                navigation.navigate('HomeStack');
+            } else {
+                // Handle error response from backend
+                console.error('Registration failed:', response.data);
+                // You can display an error message to the user or handle the error in any other way
+            }
         } catch (error) {
             console.error('Error registering user:', error);
+            // Handle network error
         }
     };
+
     return (
         <View style={{ backgroundColor: '#2151A0', height: '100%', display: 'flex' }}>
             <View style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flex: 1, gap: 60 }}>
@@ -80,7 +81,7 @@ const Register = ({ navigation }) => {
 
                 </View>
                 <View style={{ gap: 30 }}>
-                    <TouchableOpacity onPress={()=>{navigation.navigate('HomeStack')}} style={{ backgroundColor: "#174c70", height: 43, width: 301, borderRadius: 50, alignItems: 'center', justifyContent: 'center', display: 'flex' }}>
+                    <TouchableOpacity onPress={handleRegister} style={{ backgroundColor: "#174c70", height: 43, width: 301, borderRadius: 50, alignItems: 'center', justifyContent: 'center', display: 'flex' }}>
                         <Text style={{ color: "white", fontSize: 15, fontWeight: 600 }}>Register</Text>
                     </TouchableOpacity>
                 </View>
