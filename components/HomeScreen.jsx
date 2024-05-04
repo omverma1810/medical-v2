@@ -5,6 +5,7 @@ import { Checkbox } from '@ant-design/react-native';
 import { Picker } from '@react-native-picker/picker';
 import * as ImagePicker from 'expo-image-picker';
 import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const HomeScreen = ({ navigation }) => {
     const [image, setImage] = useState(null);
@@ -63,6 +64,15 @@ const HomeScreen = ({ navigation }) => {
     const onChange = (checkedValues) => {
         setChecked(checkedValues);
     };
+    const logout = async () => {
+        try {
+            await AsyncStorage.removeItem('isLoggedIn');
+            navigation.navigate('OpenScreen');
+        } catch (error) {
+            console.error('Error logging out:', error);
+        }
+    };
+
     const [selectedOption, setSelectedOption] = useState(null);
     return (
         <View style={{ backgroundColor: '#2151A0', height: '100%', display: 'flex', }}>
@@ -114,6 +124,11 @@ const HomeScreen = ({ navigation }) => {
                 <TouchableOpacity onPress={handlePredict} style={[{ backgroundColor: "#174c70", height: 43, width: 301, borderRadius: 50, alignItems: 'center', justifyContent: 'center', display: 'flex' }]}>
                     <Text style={[{ color: "white", fontSize: 15, fontWeight: 600 }]}>Predict</Text>
                 </TouchableOpacity>
+
+                <TouchableOpacity onPress={logout} style={{ marginTop: 20 }}>
+                    <Text style={{ color: 'white', fontSize: 15 }}>Logout</Text>
+                </TouchableOpacity>
+
             </View>
         </View>
     )

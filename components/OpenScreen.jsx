@@ -22,7 +22,6 @@ const OpenScreen = ({ navigation }) => {
 
             </View>
         </View>
-      
     </View>
   )
 }

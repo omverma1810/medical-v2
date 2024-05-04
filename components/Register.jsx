@@ -1,6 +1,7 @@
 import { View, Text, Image, TouchableOpacity, TextInput } from 'react-native'
 import React, { useState } from 'react';
 import axios from 'axios'; // Import axios for making HTTP requests
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Register = ({ navigation }) => {
     const [phoneNumber, setPhoneNumber] = useState('');
@@ -18,6 +19,7 @@ const Register = ({ navigation }) => {
             });
             console.log(response.data);
             if (response.status === 200) {
+                await AsyncStorage.setItem('isLoggedIn', 'true');
                 navigation.navigate('HomeStack');
             } else {
                 // Handle error response from backend
